@@ -9,6 +9,7 @@ import com.facebook.react.modules.core.DeviceEventManagerModule.RCTDeviceEventEm
 import net.gotev.uploadservice.data.UploadInfo
 import net.gotev.uploadservice.network.ServerResponse
 import net.gotev.uploadservice.observer.request.RequestObserverDelegate
+import net.gotev.uploadservice.exceptions.UploadError
 
 class GlobalRequestObserverDelegate(reactContext: ReactApplicationContext) : RequestObserverDelegate {
   private val TAG = "UploadReceiver"
@@ -27,7 +28,7 @@ class GlobalRequestObserverDelegate(reactContext: ReactApplicationContext) : Req
 
     // Make sure we do not try to call getMessage() on a null object
     if (exception != null) {
-      params.putString("error", exception.message)
+      params.putString("error", (exception as? UploadError)?.serverResponse?.bodyString ?: exception.message)
     } else {
       params.putString("error", "Unknown exception")
     }
